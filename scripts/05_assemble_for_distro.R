@@ -3,6 +3,7 @@ source("utils/pkgs_utils.R")
 ##################### VARIABLES ###############################################
 percent <- scales::label_percent(accuracy = 1)
 comma <- scales::label_comma(accuracy = 1)
+number <- scales::label_number(accuracy = 1, big.mark = "")
 # need to combine:
 # * ACS data (03_calc_acs_towns.R -> output_data/acs_town_basic_profile.rds)
 # * DCWS data (02_calc_cws_data.R -> output_data/cws_basic_indicators)
@@ -40,7 +41,7 @@ acs <- readRDS(file.path("output_data", str_glue("acs_town_basic_profile_{yr}.rd
          across(where(is.factor), fct_drop)) %>%
   pivot_longer(estimate:sharemoe, names_to = "type") %>%
   filter(!is.na(value)) %>%
-  mutate(value = ifelse(type %in% c("estimate", "moe"), percent(value), comma(value))) %>%
+  mutate(value = ifelse(type %in% c("estimate", "moe"), number(value), percent(value))) %>%
   unite(col = indicator, type, group, sep = " ") %>%
   select(Town = name, indicator, value) 
 
