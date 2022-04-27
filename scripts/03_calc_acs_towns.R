@@ -10,7 +10,7 @@ fetch <- readRDS(str_glue("fetch_data/acs_basic_{yr}_fetch_all.rds")) %>%
   map(group_by, level, name, year) %>%
   map(~replace_na(., list(moe = 0)))
 
-headings <- readr::read_csv(file.path("utils", "indicator_headings.txt")) %>%
+headings <- readr::read_csv(file.path("utils", "indicator_headings.txt"), show_col_types = FALSE) %>%
   distinct(indicator, display)
 
 ##################### CALCULATE ################################################
@@ -23,7 +23,7 @@ out$total_pop <- fetch$total_pop %>%
 # pop under 18, 65+, male, female
 # age
 out$age <- fetch$sex_by_age %>%
-  separate_acs(into = c("sex", "group"), drop_total = TRUE) %>%
+  separate_acs(into = c("sex", "group"), drop_total = TRUE, fill = "right") %>%
   filter(!is.na(group)) %>%
   # show_uniq(group) %>%
   add_grps_moe(list(total_pop = 1:23, ages00_17 = 1:4, ages65plus = 18:23)) %>%
@@ -31,7 +31,7 @@ out$age <- fetch$sex_by_age %>%
 
 # sex
 out$sex <- fetch$sex_by_age %>%
-  separate_acs(into = c("group", "age"), drop_total = TRUE) %>%
+  separate_acs(into = c("group", "age"), drop_total = TRUE, fill = "right") %>%
   filter(!is.na(group) & is.na(age)) %>%
   add_grps_moe(list(total_pop = 1:2, male = 1, female = 2)) %>%
   calc_shares_moe()
@@ -60,7 +60,7 @@ out$tenure <- fetch$tenure %>%
 # HOUSING COST
 # cost-burdened (no tenure split)
 out$housing_cost <- fetch$housing_cost %>%
-  separate_acs(into = c("tenure", "income", "group"), drop_total = TRUE) %>%
+  separate_acs(into = c("tenure", "income", "group"), drop_total = TRUE, fill = "right") %>%
   filter(!is.na(group)) %>%
   add_grps_moe(list(total_households = 1:3, cost_burden = 3)) %>%
   calc_shares_moe(denom = "total_households")
@@ -89,7 +89,7 @@ out$median_household_income <- fetch$median_income %>%
 # POVERTY & LOW INCOME
 # poverty determined, below 1x, below 2x
 out$poverty <- fetch$poverty %>%
-  separate_acs(into = "group", drop_total = TRUE) %>%
+  separate_acs(into = "group", drop_total = TRUE, fill = "right") %>%
   filter(!is.na(group)) %>%
   add_grps_moe(list(poverty_status_determined = 1:7, poverty = 1:2, low_income = 1:6)) %>%
   calc_shares_moe(denom = "poverty_status_determined")
@@ -97,7 +97,7 @@ out$poverty <- fetch$poverty %>%
 # POVERTY & LOW INCOME BY AGE
 # ages 0-17, ages 65+: poverty determined, below 1x, below 2x
 pov_age <- fetch$pov_age %>%
-  separate_acs(into = c("age", "ratio"), drop_total = TRUE) %>%
+  separate_acs(into = c("age", "ratio"), drop_total = TRUE, fill = "right") %>%
   filter(!is.na(ratio)) %>%
   mutate(across(c(age, ratio), as_factor)) %>%
   group_by(ratio, .add = TRUE) %>%

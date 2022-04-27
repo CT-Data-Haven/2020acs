@@ -11,7 +11,7 @@ number <- scales::label_number(accuracy = 1, big.mark = "")
 meta <- readRDS(file.path("utils", str_glue("{yr}_website_meta.rds"))) %>%
   mutate(across(`Maximum MoE on above estimates`, stringr::str_c, "%"))
 
-headings <- readr::read_csv(file.path("utils", "indicator_headings.txt")) %>%
+headings <- readr::read_csv(file.path("utils", "indicator_headings.txt"), show_col_types = FALSE) %>%
   separate(indicator, into = c("type", "group"), sep = " ", remove = FALSE, fill = "left") %>%
   distinct(indicator, .keep_all = TRUE)
 

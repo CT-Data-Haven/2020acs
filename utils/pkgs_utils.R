@@ -1,4 +1,12 @@
-library(dplyr)
+prsr <- argparse::ArgumentParser()
+prsr$add_argument("yr", help = "Main profile year")
+prsr$add_argument("cws_yr", help = "CWS year")
+
+args <- prsr$parse_args()
+yr <- as.numeric(args$yr)
+cws_yr <- as.numeric(args$cws_yr)
+
+library(dplyr, warn.conflicts = FALSE)
 library(purrr)
 library(tidyr)
 library(forcats)
@@ -8,8 +16,8 @@ library(dcws)
 library(camiller)
 
 ##########  VARIABLES  ################################################## ----
-yr <- 2020
-cws_yr <- 2021
+# yr <- 2020
+# cws_yr <- 2021
 
 ##########  FUNCTIONS  ################################################## ----
 has_digits <- function(x) all((str_detect(x, "^\\d")), na.rm = TRUE)

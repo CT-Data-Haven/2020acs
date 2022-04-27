@@ -27,8 +27,24 @@ print(data.tree::FromDataFrameTable(files, pathName = "file"))
 
 ## Development
 
-Call `make` to rerun scripts in the proper order. I'll move the global year variables (`yr` and `cws_yr`) to the makefile soon.
+Several global functions and other objects are loaded when each script sources `utils/pkgs_utils.R`, including all loaded libraries. There are two global variables for years: `yr` and `cws_yr`, for the ACS endyear and the CWS year, respectively. Those are both taken as positional arguments by `pkgs_utils.R` and passed down to whatever script you want to run. 
 
+For example, on the command line run:
+
+```bash
+Rscript scripts/03_calc_acs_towns.R 2020 2021
+```
+
+to execute that script for ACS year 2020 & CWS year 2021. Similarly, those 2 variables are saved in the makefile and passed to scripts from there.
+
+To build the full project in the proper order, on the command line run:
+
+```bash
+make
+# or make all
+```
+
+or rebuild just once piece of it, e.g. `make distro_nhood`.
 
 
 
