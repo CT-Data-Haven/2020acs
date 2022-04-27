@@ -1,0 +1,35 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = FALSE
+)
+```
+
+# 2020 ACS update + community profiles
+
+Distribution-ready files are in [`to_distro`](to_distro). CSV file for populating website's community profiles is in [`website`](website).
+
+## Output
+
+```{r comment=""}
+files <- data.frame(file = paste(".", list.files(c("fetch_data", "output_data", "to_distro", "website"), full.names = TRUE), sep = "/"))
+
+print(data.tree::FromDataFrameTable(files, pathName = "file"))
+```
+
+
+## Development
+
+Call `make` to rerun scripts in the proper order. I'll move the global year variables (`yr` and `cws_yr`) to the makefile soon.
+
+
+
+
+
