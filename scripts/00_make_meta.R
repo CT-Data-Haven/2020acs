@@ -59,7 +59,7 @@ moe <- dcws::cws_max_moe %>%
 meta <- readr::read_csv("https://raw.githubusercontent.com/CT-Data-Haven/2019acs/main/output_data/5year2019town_profile_expanded_CWS.csv", show_col_types = FALSE) %>%
   filter(!is.na(`Key Facts`)) %>%
   select(where(not_digits), -matches("Characteristics")) %>%
-  mutate(Source = stringr::str_replace(Source, "2018", as.character(yr)),
+  mutate(Source = stringr::str_replace(Source, "\\d{4}(?= DataHaven Community Wellbeing Survey)", as.character(cws_yr)),
          Definition = stringr::str_replace_all(Definition, "http(?=\\:)", "https"),
          Town = stringr::str_remove(Town, ", Connecticut")) %>%
   left_join(moe, by = "Town") %>%

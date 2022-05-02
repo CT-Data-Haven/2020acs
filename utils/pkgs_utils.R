@@ -1,6 +1,6 @@
 prsr <- argparse::ArgumentParser()
-prsr$add_argument("yr", help = "Main profile year")
-prsr$add_argument("cws_yr", help = "CWS year")
+prsr$add_argument("yr", help = "Main profile year", default = 2020)
+prsr$add_argument("cws_yr", help = "CWS year", default = 2021)
 
 args <- prsr$parse_args()
 yr <- as.numeric(args$yr)
