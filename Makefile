@@ -2,7 +2,7 @@ YR=2020
 CWS_YR=2021
 
 .PHONY: all
-all: distro_nhood distro_town
+all: distro_nhood distro_town README.md
 
 make_meta: utils/$(YR)_website_meta.rds
 fetch_acs: fetch_data/acs_basic_$(YR)_fetch_all.rds
@@ -33,6 +33,9 @@ output_data/acs_nhoods_by_city_$(YR).rds: scripts/04_calc_acs_nhoods.R fetch_acs
 # writes 5year2020town_profile_expanded_CWS.csv
 website/5year$(YR)town_profile_expanded_CWS.csv: scripts/05_assemble_for_distro.R make_meta calc_acs_town utils/indicator_headings.txt
 	Rscript $< $(YR) $(CWS_YR)
+
+README.md: README.Rmd
+	R -e "rmarkdown::render('README.Rmd', output_format = rmarkdown::github_document(html_preview = FALSE))"
 
 cleanall:
 	rm -f output_data/* to_distro/*
