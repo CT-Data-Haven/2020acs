@@ -82,7 +82,7 @@ out$pov_age <- fetch$pov_age %>%
   group_by(ratio, .add = TRUE) %>%
   # show_uniq(age) %>%
   add_grps_moe(list(ages00_17 = 1:3, ages65plus = 9:10), group = age) %>%
-  group_by(level, name, year, age) %>%
+  group_by(level, city, name, year, age) %>%
   # show_uniq(ratio) %>%
   add_grps_moe(list(poverty_status_determined = 1:12, poverty = 1:3, low_income = 1:8), group = ratio) %>%
   calc_shares_moe(denom = "poverty_status_determined", group = ratio) %>%
