@@ -59,7 +59,8 @@ prof_df <- bind_rows(cws, acs) %>%
 prof_out <- meta %>%
   inner_join(prof_df, by = "Town") %>%
   mutate(Town = stringr::str_replace(Town, "(?<= County)$", ", Connecticut"),
-         County = stringr::str_remove(County, " County$")) %>%
+         County = stringr::str_remove(County, " County$"),
+         Definition = stringr::str_replace_all(Definition, "\\n", "\\\\n")) %>%
   select(Town, County, `Key Facts`, 
          starts_with("Wellbeing"), all_of(by_topic$wellbeing), starts_with("Maximum MoE"),
          starts_with("Demographic"), all_of(c(by_topic$age, by_topic$sex)),
@@ -73,4 +74,4 @@ prof_out <- meta %>%
          `Poverty and Low-Income, Population 65 years and over`, all_of(by_topic$income_seniors),
          Source:`Demographic Characteristics`)
 
-readr::write_csv(prof_out, file.path("website", stringr::str_glue("5year{yr}town_profile_expanded_CWS.csv")), na = "")
+readr::write_csv(prof_out, file.path("website", stringr::str_glue("5year{yr}town_profile_expanded_CWS.csv")), na = "", quote = "all")
