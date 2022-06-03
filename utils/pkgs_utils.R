@@ -1,10 +1,17 @@
-prsr <- argparse::ArgumentParser()
-prsr$add_argument("yr", help = "Main profile year", default = 2020)
-prsr$add_argument("cws_yr", help = "CWS year", default = 2021)
-
-args <- prsr$parse_args()
-yr <- as.numeric(args$yr)
-cws_yr <- as.numeric(args$cws_yr)
+default_yr <- 2020
+default_cws_yr <- 2021
+if (interactive()) {
+  yr <- default_yr
+  cws_yr <- default_cws_yr
+} else {
+  prsr <- argparse::ArgumentParser()
+  prsr$add_argument("yr", help = "Main profile year")
+  prsr$add_argument("cws_yr", help = "CWS year")
+  
+  args <- prsr$parse_args()
+  yr <- as.numeric(args$yr)
+  cws_yr <- as.numeric(args$cws_yr)
+}
 
 library(dplyr, warn.conflicts = FALSE)
 library(purrr)

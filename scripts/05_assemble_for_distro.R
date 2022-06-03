@@ -13,17 +13,17 @@ meta <- readRDS(file.path("utils", str_glue("{yr}_website_meta.rds"))) %>%
 
 headings <- readr::read_csv(file.path("utils", "indicator_headings.txt"), show_col_types = FALSE) %>%
   separate(indicator, into = c("type", "group"), sep = " ", remove = FALSE, fill = "left") %>%
+  filter(!is.na(website)) %>%
   distinct(indicator, .keep_all = TRUE)
 
 # add MoE to each acs column
 moe <- headings %>%
   filter(topic != "wellbeing") %>%
   mutate(type = recode(type, estimate = "moe", share = "sharemoe"),
-         display = paste("MoE", display)) %>%
+         website = paste("MoE", website)) %>%
   unite(col = indicator, type, group, sep = " ", remove = FALSE)
 
 headings_full <- bind_rows(headings, moe) %>%
-  filter(!grepl("ages 18+", display)) %>%
   mutate(across(topic:group, as_factor),
          topic = fct_relevel(topic, "wellbeing", "age", "sex", "race", "immigration", "housing", "vehicles", "education", "median_household_income", "income", "income_children", "income_seniors"),
          type = fct_relevel(type, "estimate", "moe", "share", "sharemoe")) %>%
@@ -31,7 +31,7 @@ headings_full <- bind_rows(headings, moe) %>%
 
 by_topic <- headings_full %>%
   split(.$topic) %>%
-  map(pull, display)
+  map(pull, website)
 
 # data to stick together
 acs <- readRDS(file.path("output_data", str_glue("acs_town_basic_profile_{yr}.rds"))) %>%
@@ -54,7 +54,7 @@ cws <- readRDS(file.path("output_data", str_glue("cws_basic_indicators_{cws_yr}.
 # assemble
 prof_df <- bind_rows(cws, acs) %>%
   left_join(headings_full, by = "indicator") %>%
-  pivot_wider(id_cols = Town, names_from = display, values_from = value)
+  pivot_wider(id_cols = Town, names_from = website, values_from = value)
 
 prof_out <- meta %>%
   inner_join(prof_df, by = "Town") %>%

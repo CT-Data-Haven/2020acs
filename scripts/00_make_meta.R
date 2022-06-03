@@ -56,8 +56,10 @@ moe <- dcws::cws_max_moe %>%
 
 ######################################## HEADINGS ##############################----
 # copy over from 2019 instead of rewriting
-meta <- readr::read_csv("https://raw.githubusercontent.com/CT-Data-Haven/2019acs/main/output_data/5year2019town_profile_expanded_CWS.csv", show_col_types = FALSE) %>%
-  filter(!is.na(`Key Facts`)) %>%
+old_prof <- readr::read_csv("https://raw.githubusercontent.com/CT-Data-Haven/2019acs/main/output_data/5year2019town_profile_expanded_CWS.csv", show_col_types = FALSE) %>%
+  filter(!is.na(`Key Facts`))
+
+meta <- old_prof %>%
   select(where(not_digits), -matches("Characteristics")) %>%
   mutate(Source = stringr::str_replace(Source, "\\d{4}(?= DataHaven Community Wellbeing Survey)", as.character(cws_yr)),
          Definition = stringr::str_replace_all(Definition, "http(?=\\:)", "https"),
@@ -67,6 +69,7 @@ meta <- readr::read_csv("https://raw.githubusercontent.com/CT-Data-Haven/2019acs
   left_join(urls, by = "Town")
 
 saveRDS(meta, file.path("utils", str_glue("{yr}_website_meta.rds")))
+
 
 
 ######################################## DOWNLOADS #############################----
